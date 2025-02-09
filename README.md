@@ -14,7 +14,7 @@
 - 테스트 방법
   - 프로그램 실행 시 자동으로 DB schema.sql, data.sql 실행하여 테스트 환경 구축
   - Postman을 사용하여 테스트 진행
-  - test 디렉토리의 ProductControllerTest, BrandControllerTest 파일로 테스트 진행
+  - Musinsa.postman_collection.json를 postman에 copy
 ### 구현 과정
 #### 1. 고려 사항
    - 카테고리 데이터는 자주 수정이 되지 않는다는 전제
