@@ -36,7 +36,7 @@ class BrandControllerTest {
 
         BrandRequestDto brandRequestDto = new BrandRequestDto(-1, "J");
 
-        mockMvc.perform(post("/brand/register")
+        mockMvc.perform(post("/brand")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(brandRequestDto)))
                 .andExpect(status().isOk())
@@ -50,7 +50,7 @@ class BrandControllerTest {
         // 1. 이미 같은 이름의 브랜드가 있을 때
         BrandRequestDto brandRequestDto1 = new BrandRequestDto(-1, "A");
 
-        mockMvc.perform(post("/brand/register")
+        mockMvc.perform(post("/brand")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(brandRequestDto1)))
                 .andExpect(status().isOk())
@@ -59,7 +59,7 @@ class BrandControllerTest {
 
 
         // 2. 빈 값으로 왔을 때
-        mockMvc.perform(post("/brand/register")
+        mockMvc.perform(post("/brand")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString("")))
                 .andExpect(status().isOk())
@@ -71,7 +71,7 @@ class BrandControllerTest {
 
         BrandRequestDto brandRequestDto = new BrandRequestDto(1, "K");
 
-        mockMvc.perform(patch("/brand/update")
+        mockMvc.perform(patch("/brand")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(brandRequestDto)))
                 .andExpect(status().isOk())
@@ -85,7 +85,7 @@ class BrandControllerTest {
         // 1. 존재 하지 않는 브랜드일 때
         BrandRequestDto brandRequestDto1 = new BrandRequestDto(0, "K");
 
-        mockMvc.perform(patch("/brand/update")
+        mockMvc.perform(patch("/brand")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(brandRequestDto1)))
                 .andExpect(status().isOk())
@@ -96,7 +96,7 @@ class BrandControllerTest {
         // 2. 중복되는 이름이 존재할 때
         BrandRequestDto brandRequestDto2 = new BrandRequestDto(1, "C");
 
-        mockMvc.perform(patch("/brand/update")
+        mockMvc.perform(patch("/brand")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(brandRequestDto2)))
                 .andExpect(status().isOk())
@@ -105,7 +105,7 @@ class BrandControllerTest {
 
 
         // 3. 빈 값이 왔을 때
-        mockMvc.perform(patch("/brand/update")
+        mockMvc.perform(patch("/brand")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString("")))
                 .andExpect(status().isOk())
@@ -117,7 +117,7 @@ class BrandControllerTest {
 
         // 삭제할 신규 브랜드 추가
         BrandRequestDto brandRequestDto1 = new BrandRequestDto(0, "J");
-        mockMvc.perform(post("/brand/register")
+        mockMvc.perform(post("/brand")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(brandRequestDto1)))
                 .andExpect(status().isOk())
@@ -125,7 +125,7 @@ class BrandControllerTest {
 
         BrandRequestDto brandRequestDto2 = new BrandRequestDto(10);
 
-        mockMvc.perform(delete("/brand/delete")
+        mockMvc.perform(delete("/brand")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(brandRequestDto2)))
                 .andExpect(status().isOk())
@@ -139,7 +139,7 @@ class BrandControllerTest {
         // 1. 존재하지 않는 브랜드일 때
         BrandRequestDto brandRequestDto1 = new BrandRequestDto(0);
 
-        mockMvc.perform(delete("/brand/delete")
+        mockMvc.perform(delete("/brand")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(brandRequestDto1)))
                 .andExpect(status().isOk())
@@ -149,7 +149,7 @@ class BrandControllerTest {
         // 2. 삭제할 브랜드의 상품이 아직 존재할 때
         BrandRequestDto brandRequestDto = new BrandRequestDto(1);
 
-        mockMvc.perform(delete("/brand/delete")
+        mockMvc.perform(delete("/brand")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(brandRequestDto)))
                 .andExpect(status().isOk())

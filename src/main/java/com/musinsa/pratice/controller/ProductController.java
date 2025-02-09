@@ -54,7 +54,7 @@ public class ProductController {
     /**
      * 구현 4-1) 상품을 추가 / 업데이트 / 삭제하는 API
      */
-    @PostMapping("/product/register")
+    @PostMapping("/product")
     public CommonResponse<?> register(@RequestBody ProductRequestDto productRequestDto) {
 
         productService.register(productRequestDto);
@@ -62,7 +62,7 @@ public class ProductController {
         return new CommonResponse<>(HttpStatus.CREATED, SUCCESS_MSG);
     }
 
-    @PatchMapping("/product/update")
+    @PatchMapping("/product")
     public CommonResponse<?> update(@RequestBody ProductRequestDto productRequestDto) {
 
         productService.update(productRequestDto);
@@ -70,7 +70,7 @@ public class ProductController {
         return new CommonResponse<>(HttpStatus.OK, SUCCESS_MSG);
     }
 
-    @DeleteMapping("/product/delete")
+    @DeleteMapping("/product")
     public CommonResponse<?> delete(@RequestBody ProductRequestDto productRequestDto) {
 
         productService.delete(productRequestDto);

@@ -21,7 +21,7 @@ public class BrandController {
     /**
      * 구현 4-2) 브랜드 추가 / 업데이트 / 삭제하는 API
      */
-    @PostMapping("/brand/register")
+    @PostMapping("/brand")
     public CommonResponse<?> register(@Valid @RequestBody BrandRequestDto brandRequestDto) {
 
         brandService.register(brandRequestDto);
@@ -29,7 +29,7 @@ public class BrandController {
         return new CommonResponse<>(HttpStatus.CREATED, SUCCESS_MSG);
     }
 
-    @PatchMapping("/brand/update")
+    @PatchMapping("/brand")
     public CommonResponse<?> update(@Valid @RequestBody BrandRequestDto brandRequestDto) {
 
         brandService.update(brandRequestDto);
@@ -37,7 +37,7 @@ public class BrandController {
         return new CommonResponse<>(HttpStatus.OK, SUCCESS_MSG);
     }
 
-    @DeleteMapping("/brand/delete")
+    @DeleteMapping("/brand")
     public CommonResponse<?> delete(@RequestBody BrandRequestDto brandRequestDto) {
 
         brandService.delete(brandRequestDto);

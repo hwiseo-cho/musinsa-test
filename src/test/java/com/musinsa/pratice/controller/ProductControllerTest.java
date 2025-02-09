@@ -85,7 +85,7 @@ class ProductControllerTest {
 
         ProductRequestDto productRequestDto = new ProductRequestDto(1, 1, 30000);
 
-        mockMvc.perform(post("/product/register")
+        mockMvc.perform(post("/product")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(productRequestDto)))
                 .andExpect(status().isOk())
@@ -99,7 +99,7 @@ class ProductControllerTest {
         // 1. 존재하지 않는 카테고리일 때
         ProductRequestDto productRequestDto1 = new ProductRequestDto(111, 1, 30000);
 
-        mockMvc.perform(post("/product/register")
+        mockMvc.perform(post("/product")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(productRequestDto1)))
                 .andExpect(status().isOk())
@@ -109,7 +109,7 @@ class ProductControllerTest {
         // 2. 존재하지 않는 브랜드일 때
         ProductRequestDto productRequestDto2 = new ProductRequestDto(1, 111, 30000);
 
-        mockMvc.perform(post("/product/register")
+        mockMvc.perform(post("/product")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(productRequestDto2)))
                 .andExpect(status().isOk())
@@ -117,7 +117,7 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.message").value(ErrorCode.BRAND_NOT_FOUND.getMessage()));
 
         // 3. 빈 값이 왔을 때
-        mockMvc.perform(post("/product/register")
+        mockMvc.perform(post("/product")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString("")))
                 .andExpect(status().isOk())
@@ -130,7 +130,7 @@ class ProductControllerTest {
 
         ProductRequestDto productRequestDto = new ProductRequestDto(1,1, 1, 30000);
 
-        mockMvc.perform(patch("/product/update")
+        mockMvc.perform(patch("/product")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(productRequestDto)))
                 .andExpect(status().isOk())
@@ -144,7 +144,7 @@ class ProductControllerTest {
         // 1. 존재하지 않는 상품일 때
         ProductRequestDto productRequestDto = new ProductRequestDto(0,1, 1, 30000);
 
-        mockMvc.perform(patch("/product/update")
+        mockMvc.perform(patch("/product")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(productRequestDto)))
                 .andExpect(status().isOk())
@@ -152,7 +152,7 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.message").value(ErrorCode.PRODUCT_NOT_FOUND.getMessage()));
 
         // 2. 빈 값이 왔을 때
-        mockMvc.perform(patch("/product/update")
+        mockMvc.perform(patch("/product")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString("")))
                 .andExpect(status().isOk())
@@ -165,7 +165,7 @@ class ProductControllerTest {
 
         ProductRequestDto productRequestDto = new ProductRequestDto(1);
 
-        mockMvc.perform(delete("/product/delete")
+        mockMvc.perform(delete("/product")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(productRequestDto)))
                 .andExpect(status().isOk())
@@ -178,7 +178,7 @@ class ProductControllerTest {
         // 1. 존재하지 않는 상품일 때
         ProductRequestDto productRequestDto = new ProductRequestDto(1111);
 
-        mockMvc.perform(delete("/product/delete")
+        mockMvc.perform(delete("/product")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(productRequestDto)))
                 .andExpect(status().isOk())
@@ -187,7 +187,7 @@ class ProductControllerTest {
 
 
         // 2. 빈 값이 왔을 때
-        mockMvc.perform(delete("/product/delete")
+        mockMvc.perform(delete("/product")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString("")))
                 .andExpect(status().isOk())
