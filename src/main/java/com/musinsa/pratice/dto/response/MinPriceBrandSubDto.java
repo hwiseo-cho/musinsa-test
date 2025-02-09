@@ -1,7 +1,9 @@
 package com.musinsa.pratice.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.musinsa.pratice.serializer.IntToMoneyDeserializer;
 import com.musinsa.pratice.serializer.IntToMoneySerializer;
 
 import java.util.List;
@@ -13,6 +15,7 @@ public record MinPriceBrandSubDto(
         List<ProductSimpleDto> list,
         @JsonProperty("총액")
         @JsonSerialize(using = IntToMoneySerializer.class)
+        @JsonDeserialize(using = IntToMoneyDeserializer.class)
         int totalPrice
 ) {
 

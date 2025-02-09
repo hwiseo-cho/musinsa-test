@@ -10,6 +10,7 @@ import com.musinsa.pratice.mapper.BrandMapper;
 import com.musinsa.pratice.mapper.CategoryMapper;
 import com.musinsa.pratice.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ public class BrandService {
     private final ProductMapper productMapper;
 
     @Transactional
+    @CacheEvict(value = {"minPrice","minPriceBrand","extremesPrice"},  allEntries = true)
     public void register(BrandRequestDto brandRequestDto) {
         if(brandMapper.existByName(brandRequestDto.name())) {
             throw new MusinsaException(ErrorCode.BRAND_NAME_DUPLICATE);
@@ -37,6 +39,7 @@ public class BrandService {
     }
 
     @Transactional
+    @CacheEvict(value = {"minPrice","minPriceBrand","extremesPrice"},  allEntries = true)
     public void update(BrandRequestDto brandRequestDto) {
         if(!brandMapper.existById(brandRequestDto.id())) {
             throw new MusinsaException(ErrorCode.BRAND_NOT_FOUND);
@@ -54,6 +57,7 @@ public class BrandService {
     }
 
     @Transactional
+    @CacheEvict(value = {"minPrice","minPriceBrand","extremesPrice"},  allEntries = true)
     public void delete(BrandRequestDto brandRequestDto) {
         if(!brandMapper.existById(brandRequestDto.id())) {
             throw new MusinsaException(ErrorCode.BRAND_NOT_FOUND);

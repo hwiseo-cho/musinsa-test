@@ -9,6 +9,8 @@ import com.musinsa.pratice.mapper.BrandMapper;
 import com.musinsa.pratice.mapper.CategoryMapper;
 import com.musinsa.pratice.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -25,6 +27,7 @@ public class ProductService {
     private final BrandMapper brandMapper;
     private final CategoryMapper categoryMapper;
 
+    @Cacheable(value = "minPrice")
     public MinPriceDto minPrice() {
         List<ProductDto> list = null;
 
@@ -40,6 +43,7 @@ public class ProductService {
         );
     }
 
+    @Cacheable(value = "minPriceBrand")
     public MinPriceBrandSubDto minPriceBrand() {
         List<ProductDto> list = null;
 
@@ -59,6 +63,7 @@ public class ProductService {
         );
     }
 
+    @Cacheable(value = "extremesPrice", key = "#categoryName")
     public ExtremesPriceDto extremesPrice(String categoryName) {
         List<ExtremesPriceSubDto> list = null;
 
@@ -80,6 +85,7 @@ public class ProductService {
     }
 
     @Transactional
+    @CacheEvict(value = {"minPrice","minPriceBrand","extremesPrice"},  allEntries = true)
     public void register(ProductRequestDto productRequestDto) {
         if(!categoryMapper.existById(productRequestDto.categoryId())) {
             throw new MusinsaException(ErrorCode.CATEGORY_NOT_FOUND);
@@ -97,6 +103,7 @@ public class ProductService {
     }
 
     @Transactional
+    @CacheEvict(value = {"minPrice","minPriceBrand","extremesPrice"},  allEntries = true)
     public void update(ProductRequestDto productRequestDto) {
         if(!productMapper.existById(productRequestDto.id())) {
             throw new MusinsaException(ErrorCode.PRODUCT_NOT_FOUND);
@@ -110,6 +117,7 @@ public class ProductService {
     }
 
     @Transactional
+    @CacheEvict(value = {"minPrice","minPriceBrand","extremesPrice"},  allEntries = true)
     public void delete(ProductRequestDto productRequestDto) {
         if(!productMapper.existById(productRequestDto.id())) {
             throw new MusinsaException(ErrorCode.PRODUCT_NOT_FOUND);
