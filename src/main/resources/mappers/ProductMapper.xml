@@ -3,76 +3,28 @@
 
 <mapper namespace="com.musinsa.pratice.mapper.ProductMapper">
 
-    <select id="minPriceList" resultType="com.musinsa.pratice.dto.response.ProductDto">
+    <select id="findAll" resultType="com.musinsa.pratice.dto.response.ProductDto">
         SELECT
             C.NAME AS CATEGORY_NAME,
             B.NAME AS BRAND,
-            P.PRICE
-        FROM
-        (
-            SELECT
-                CATEGORY_ID,
-                BRAND_ID,
-                PRICE,
-                ROW_NUMBER() OVER (PARTITION BY CATEGORY_ID ORDER BY PRICE ASC, BRAND_ID DESC) AS RN
-            FROM
-                TB_PRODUCT
-        ) P
-        JOIN TB_CATEGORY C ON(C.ID = P.CATEGORY_ID)
-        JOIN TB_BRAND B ON(B.ID = P.BRAND_ID)
-        WHERE
-            P.RN = 1
-    </select>
-
-    <select id="minPriceBrandProductList" resultType="com.musinsa.pratice.dto.response.ProductDto">
-        SELECT
-            C.NAME AS CATEGORY_NAME,
-            B.NAME AS BRAND,
-            P.PRICE
+            P.PRICE,
+            P.CATEGORY_ID
         FROM
             TB_PRODUCT P
         JOIN TB_CATEGORY C ON(C.ID = P.CATEGORY_ID)
         JOIN TB_BRAND B ON(B.ID = P.BRAND_ID)
-        WHERE
-            P.BRAND_ID = (
-                SELECT
-                    BRAND_ID
-                FROM (
-                    SELECT
-                        BRAND_ID,
-                        SUM(PRICE) AS TOTAL_PRICE
-                    FROM
-                        TB_PRODUCT
-                    GROUP BY BRAND_ID
-                ) AS BRAND_TOTAL
-                ORDER BY TOTAL_PRICE
-                LIMIT 1
-            )
     </select>
 
     <select id="extremesPrice" resultType="com.musinsa.pratice.dto.response.ExtremesPriceSubDto">
         SELECT
             B.NAME AS BRAND,
-            P2.PRICE
+            P1.PRICE
         FROM
-        (
-            SELECT
-                C.NAME,
-                P1.CATEGORY_ID,
-                P1.BRAND_ID,
-                P1.PRICE,
-                ROW_NUMBER() OVER (PARTITION BY P1.CATEGORY_ID ORDER BY P1.PRICE ASC) AS RN_ASC,
-                ROW_NUMBER() OVER (PARTITION BY P1.CATEGORY_ID ORDER BY P1.PRICE DESC) AS RN_DESC
-            FROM
-                TB_PRODUCT P1
+            TB_PRODUCT P1
             JOIN TB_CATEGORY C ON(C.ID = P1.CATEGORY_ID)
-            WHERE
-                C.NAME_EN = #{categoryName}
-        ) P2
-        JOIN TB_BRAND B ON(B.ID = P2.BRAND_ID)
+            JOIN TB_BRAND B ON(B.ID = P1.BRAND_ID)
         WHERE
-            RN_ASC = 1 OR RN_DESC = 1
-        ORDER BY P2.PRICE
+            C.NAME_EN = #{categoryName}
     </select>
 
     <insert id="register" parameterType="com.musinsa.pratice.dto.request.ProductRequestDto">

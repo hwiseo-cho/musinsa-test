@@ -3,7 +3,6 @@ package com.musinsa.pratice.controller;
 import com.musinsa.pratice.dto.request.ProductRequestDto;
 import com.musinsa.pratice.dto.response.*;
 import com.musinsa.pratice.service.ProductService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

@@ -1,5 +1,7 @@
 package com.musinsa.pratice.enums;
 
+import java.util.Arrays;
+
 public enum Category {
     TOP("상의"),
     OUTER("아우터"),
@@ -25,5 +27,13 @@ public enum Category {
 
         return false;
     }
+
+    public static Category of(String label) {
+        return Arrays.stream(Category.values())
+                .filter(c -> c.label.equals(label))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Invalid category label: " + label));
+    }
+
 
 }

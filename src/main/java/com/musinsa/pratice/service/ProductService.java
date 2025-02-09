@@ -15,7 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -32,7 +34,20 @@ public class ProductService {
         List<ProductDto> list = null;
 
         try {
-            list = productMapper.minPriceList();
+            list = productMapper.findAll();
+
+            // 카테고리별 최저가 상품 찾기
+            Map<String, Optional<ProductDto>> minPriceProductsByCategory = list.stream()
+                    .collect(Collectors.groupingBy(
+                            ProductDto::categoryName,
+                            Collectors.minBy(Comparator.comparingInt(ProductDto::price))
+                    ));
+
+            list = minPriceProductsByCategory.values().stream()
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .sorted(Comparator.comparing(p -> Category.of(p.categoryName()).ordinal()))
+                    .collect(Collectors.toList());
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -46,32 +61,52 @@ public class ProductService {
     @Cacheable(value = "minPriceBrand")
     public MinPriceBrandSubDto minPriceBrand() {
         List<ProductDto> list = null;
+        List<ProductSimpleDto> productSimpleDtoList = null;
+        String brand = null;
 
         try {
-            list = productMapper.minPriceBrandProductList();
+            list = productMapper.findAll();
+
+            // 브랜드별 총 가격 계산
+            Map<String, Integer> brandTotalPrices = list.stream()
+                    .collect(Collectors.groupingBy(ProductDto::brand, Collectors.summingInt(ProductDto::price)));
+
+            // 최소 가격 브랜드 찾기
+            brand = brandTotalPrices.entrySet().stream()
+                    .min(Map.Entry.comparingByValue())
+                    .map(Map.Entry::getKey).orElse(null);
+
+            String finalBrand = brand;
+            productSimpleDtoList = list.stream().filter(p -> p.brand().equals(finalBrand)).map(p -> new ProductSimpleDto(
+                    p.categoryName(),
+                    p.price()
+            )).collect(Collectors.toList());
+
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
 
         return new MinPriceBrandSubDto(
-                list.stream().map(ProductDto::brand).findAny().orElse(""),
-                list.stream().map(p -> new ProductSimpleDto(
-                        p.categoryName(),
-                        p.price()
-                )).collect(Collectors.toList()),
-                list.stream().mapToInt(ProductDto::price).sum()
+                brand,
+                productSimpleDtoList,
+                productSimpleDtoList.stream().mapToInt(ProductSimpleDto::price).sum()
         );
     }
 
     @Cacheable(value = "extremesPrice", key = "#categoryName")
     public ExtremesPriceDto extremesPrice(String categoryName) {
         List<ExtremesPriceSubDto> list = null;
+        ExtremesPriceSubDto minExtremesPriceSubDto = null;
+        ExtremesPriceSubDto maxExtremesPriceSubDto = null;
 
         try {
             list = productMapper.extremesPrice(categoryName);
 
             if(list.isEmpty()) {
                 throw new MusinsaException(ErrorCode.CATEGORY_NOT_FOUND);
+            } else {
+                minExtremesPriceSubDto = list.stream().min(Comparator.comparingInt(ExtremesPriceSubDto::price)).orElse(null);
+                maxExtremesPriceSubDto = list.stream().max(Comparator.comparingInt(ExtremesPriceSubDto::price)).orElse(null);
             }
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
@@ -79,8 +114,8 @@ public class ProductService {
 
         return new ExtremesPriceDto(
                 Category.valueOf(categoryName).label,
-                list.get(0),
-                list.get(1)
+                minExtremesPriceSubDto,
+                maxExtremesPriceSubDto
         );
     }
 

@@ -12,9 +12,7 @@ import java.util.List;
 @Mapper
 public interface ProductMapper {
 
-    public List<ProductDto> minPriceList();
-
-    public List<ProductDto> minPriceBrandProductList();
+    public List<ProductDto> findAll();
 
     public List<ExtremesPriceSubDto> extremesPrice(String categoryName);
 
