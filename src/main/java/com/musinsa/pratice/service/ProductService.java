@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,15 +34,20 @@ public class ProductService {
             list = productMapper.findAll();
 
             // 카테고리별 최저가 상품 찾기
-            Map<String, Optional<ProductDto>> minPriceProductsByCategory = list.stream()
+            Map<String, ProductDto> minPriceProductsByCategory = list.stream()
                     .collect(Collectors.groupingBy(
                             ProductDto::categoryName,
-                            Collectors.minBy(Comparator.comparingInt(ProductDto::price))
+                            Collectors.collectingAndThen(
+                                    Collectors.toList(),
+                                    products -> products.stream()
+                                            .min(Comparator.comparingInt(ProductDto::price)
+                                                    .thenComparing(Comparator.comparing(ProductDto::brand).reversed()))
+                                            .orElse(null)
+                            )
                     ));
 
+
             list = minPriceProductsByCategory.values().stream()
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
                     .sorted(Comparator.comparing(p -> Category.of(p.categoryName()).ordinal()))
                     .collect(Collectors.toList());
         } catch (Exception e) {
