@@ -62,12 +62,11 @@ public class ProductService {
 
     @Cacheable(value = "minPriceBrand")
     public MinPriceBrandSubDto minPriceBrand() {
-        List<ProductDto> list = null;
         List<ProductSimpleDto> productSimpleDtoList = null;
         String brand = null;
 
         try {
-            list = productMapper.findAll();
+            List<ProductDto> list = productMapper.findAll();
 
             // 브랜드별 총 가격 계산
             Map<String, Integer> brandTotalPrices = list.stream()
@@ -97,12 +96,11 @@ public class ProductService {
 
     @Cacheable(value = "extremesPrice", key = "#categoryName")
     public ExtremesPriceDto extremesPrice(String categoryName) {
-        List<ExtremesPriceSubDto> list = null;
         ExtremesPriceSubDto minExtremesPriceSubDto = null;
         ExtremesPriceSubDto maxExtremesPriceSubDto = null;
 
         try {
-            list = productMapper.extremesPrice(categoryName);
+            List<ExtremesPriceSubDto> list = productMapper.extremesPrice(categoryName);
 
             if(list.isEmpty()) {
                 throw new MusinsaException(ErrorCode.CATEGORY_NOT_FOUND);
